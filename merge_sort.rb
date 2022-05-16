@@ -33,13 +33,33 @@
 # body
 
 def merge_sort(array)
-  return array if array.length == 1
+  if array.size < 2
+    array
+  else
+    left = merge_sort(array[0...array.size / 2])
+    right = merge_sort(array[array.size / 2...array.size])
+    merge(left, right)
+  end
+end
 
-  arr_a = merge_sort(array.slice!(0, (array.length / 2).floor))
-  arr_b = merge_sort(array)
-  merged_arr = []
-  merged_arr << (arr_a[0] > arr_b[0] ? arr_b.shift : arr_a.shift) until arr_a.empty? || arr_b.empty?
-  merged_arr += arr_a.empty? ? arr_b : arr_a
+def merge(left, right, array = [])
+  (left.size + right.size).times do
+    if left.empty?
+      array << right.shift
+    elsif right.empty?
+      array << left.shift
+    else
+      comparison = left <=> right
+      if comparison == -1
+        array << left.shift
+      elsif comparison == 1
+        array << right.shift
+      else
+        array << left.shift
+      end
+    end
+  end
+  array
 end
 
 # test
@@ -52,3 +72,10 @@ p merge_sort [0, 2, 4, 8, 0, 2, 4, 6]
 
 p merge_sort [3, 1, 2]
 # => [1, 2, 3]
+
+arr = []
+rand(200).times do
+  arr << rand(200)
+end
+
+p merge_sort(arr)
